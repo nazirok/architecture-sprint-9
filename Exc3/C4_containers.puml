@@ -1,0 +1,48 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+SHOW_PERSON_OUTLINE()
+
+title Диагрмма контейнеров для системы "Умный дом"
+top to bottom direction
+AddRelTag("async", $textColor=$ARROW_FONT_COLOR, $lineColor=$ARROW_COLOR, $lineStyle=DashedLine())
+AddRelTag("sync/async", $textColor=$ARROW_FONT_COLOR, $lineColor=$ARROW_COLOR, $lineStyle=DottedLine())
+AddElementTag("backendContainer", $fontColor=$ELEMENT_FONT_COLOR, $bgColor="#335DA5", $shape=EightSidedShape(), $legendText="backend container\neight sided")
+
+Person(client, "Клиент", "Клиент банка")
+Person(back, "Сотрудник бэк офиса", "Сотрудник бэк офиса")
+Person(call_center_person, "Менеджер коллл центра", "Сотрудник колл центра")
+
+System_Boundary(bank_standart_system, "Цифровые системы банка Стандарт") {
+    Container(internet_bank, "Сервис интернет банка", "ASP.NET MVC 4.5", "Клиент-серверная система интернет банка")
+    ContainerDb(internet_banK_db, "База данных интернет банка", "MS SQL", "Хранит данные по работе интернет банка")
+
+    Container(abs, "АБС банка", "Delphi", "Десктопный клиент")
+    ContainerDb(abs_db, "База данных системы АБС", "Oracle", "Хранит и обрабатывает данные системы АБС")
+
+    Container(call_center, "Система колл центра", "React.js/Java Spring Boot", "Собствственная система колл центра банка")
+    ContainerDb(call_center_db, "База данных системы колл центра", "PostreSQL", "Хранит и обрабатывает данные системы колл центра")
+
+    Container(sms_gateway, "СМС шлюз", "", "")
+    Container(site, "Сайт банка", "React.js/PHP", "Сайт банка")
+}
+
+System_Ext(telecom, "Внешний оператор  по отправке СМС", "")
+System_Ext(ext_call_center, "Партнерский колл центр", "")
+
+Rel(client, site, "Подача заявки на депозит", "HTTPS")
+Rel(client, internet_bank, "Подача заявки на депозит", "native")
+
+Rel(internet_bank, internet_banK_db, "Взаимодействие с базой", "native")
+Rel(call_center, call_center_db, "Взаимодействие с базой", "native")
+Rel(abs, abs_db, "Взаимодействие с базой", "native")
+Rel(sms_gateway, telecom, "Отправка СМС клиенту", "native")
+Rel(telecom, client, "Отправка СМС клиенту", "native")
+Rel(abs, sms_gateway, "Отправка СМС клиенту", "native")
+Rel(call_center_person, call_center, "Взаимодействие с системой колл центра", "HTTPS")
+
+Rel(back, abs, "обработка заявки", "native")
+
+
+SHOW_LEGEND()
+@enduml
