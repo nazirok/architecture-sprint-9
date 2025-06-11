@@ -1,0 +1,35 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+SHOW_PERSON_OUTLINE()
+
+title Диагрмма контейнеров для системы банка "Стандарт"
+top to bottom direction
+AddRelTag("async", $textColor=$ARROW_FONT_COLOR, $lineColor=$ARROW_COLOR, $lineStyle=DashedLine())
+AddRelTag("sync/async", $textColor=$ARROW_FONT_COLOR, $lineColor=$ARROW_COLOR, $lineStyle=DottedLine())
+AddElementTag("backendContainer", $fontColor=$ELEMENT_FONT_COLOR, $bgColor="#335DA5", $shape=EightSidedShape(), $legendText="backend container\neight sided")
+
+Person(client, "Клиент", "Клиент банка")
+Person(call_center_person, "Менеджер коллл центра", "")
+Person(ext_call_center_person, "Менеджер парнтерского колл центра", "")
+
+System_Boundary(bank_standart_system, "Цифровые системы банка Стандарт") {
+    Container(abs, "АБС банка", "Delphi", "Десктопный клиент")
+    ContainerDb(abs_db, "База данных системы АБС", "Oracle", "Хранит и обрабатывает данные системы АБС")
+
+    Container(call_center, "Система колл центра", "React.js/Java Spring Boot", "Собствственная система колл центра банка")
+    ContainerDb(call_center_db, "База данных системы колл центра", "PostreSQL", "Хранит и обрабатывает данные системы колл центра")
+}
+
+System_Ext(ext_call_center, "Партнерский колл центр", "")
+
+Rel(client, call_center, "Консультация", "")
+Rel(client, ext_call_center, "Консультация", "")
+
+Rel(call_center_person, abs, "Получение информации по ставкам депозитов", "")
+Rel(ext_call_center_person, ext_call_center, "Получение информации по ставкам депозитов", "")
+Rel(call_center, call_center_db, "Взаимодействие с базой", "native")
+Rel(abs, abs_db, "Взаимодействие с базой", "native")
+
+SHOW_LEGEND()
+@enduml

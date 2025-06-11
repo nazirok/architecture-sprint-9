@@ -1,0 +1,20 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+title Диагрмма контекста для системы банка "Стандарт"
+top to bottom direction
+AddRelTag("async", $textColor=$ARROW_FONT_COLOR, $lineColor=$ARROW_COLOR, $lineStyle=DashedLine())
+
+Person(client, "Клиент", "Клиент банка")
+Person(back, "Сотрудник бэк офиса", "Сотрудник бэк офиса")
+System(bank_standart_system, "Цифровые системы банка Стандарт", "Сервисы сайта и интернет банка")
+System_Ext(telecom, "Внешний оператор по отправке СМС", "")
+System_Ext(ext_call_center, "Партнерский колл центр", "")
+
+Rel(client, bank_standart_system, "Оформление заявки на депозит", "HTTPS")
+Rel(back, bank_standart_system, "Обработка заявки на депозит", "PL-SQL")
+Rel(bank_standart_system, telecom, "Отправка СМС клиенту", "native")
+Rel(telecom, client, "Отправка СМС клиенту", "native")
+
+SHOW_LEGEND()
+@enduml
